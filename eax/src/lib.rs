@@ -121,7 +121,7 @@ pub use aead::{self, AeadCore, AeadInPlace, Error, Key, KeyInit, KeySizeUser};
 pub use cipher;
 
 use cipher::{
-    consts::{U0, U16},
+    consts::{U0, U4, U16},
     generic_array::{functional::FunctionalSequence, GenericArray},
     BlockCipher, BlockEncrypt, InnerIvInit, StreamCipherCore,
 };
@@ -200,7 +200,7 @@ where
     Cipher: BlockCipher<BlockSize = U16> + BlockEncrypt + Clone + KeyInit,
     M: TagSize,
 {
-    type NonceSize = Cipher::BlockSize;
+    type NonceSize = U4;
     type TagSize = M;
     type CiphertextOverhead = U0;
 }

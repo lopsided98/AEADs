@@ -65,6 +65,7 @@ use cipher::{
 };
 use cmac::Mac;
 use core::marker::PhantomData;
+use cipher::consts::U4;
 
 pub use Eax as EaxOnline;
 
@@ -167,7 +168,7 @@ where
 {
     /// Creates a stateful EAX instance that is capable of processing both
     /// the associated data and the plaintext in an "on-line" fashion.
-    pub fn with_key_and_nonce(key: &Key<Cipher>, nonce: &Nonce<Cipher::BlockSize>) -> Self {
+    pub fn with_key_and_nonce(key: &Key<Cipher>, nonce: &Nonce<U4>) -> Self {
         let imp = EaxImpl::<Cipher, M>::with_key_and_nonce(key, nonce);
 
         Self {
@@ -286,7 +287,7 @@ where
 {
     /// Creates a stateful EAX instance that is capable of processing both
     /// the associated data and the plaintext in an "on-line" fashion.
-    fn with_key_and_nonce(key: &Key<Cipher>, nonce: &Nonce<Cipher::BlockSize>) -> Self {
+    fn with_key_and_nonce(key: &Key<Cipher>, nonce: &Nonce<U4>) -> Self {
         let prepend_cmac = |key, init_val, data| {
             let mut cmac = <Cmac<Cipher> as Mac>::new(key);
             cmac.update(&[0; 15]);
@@ -420,7 +421,7 @@ mod test_impl {
         Cipher: BlockCipher<BlockSize = U16> + BlockEncrypt + Clone + KeyInit,
         M: TagSize,
     {
-        type NonceSize = Cipher::BlockSize;
+        type NonceSize = U4;
         type TagSize = M;
         type CiphertextOverhead = U0;
     }
